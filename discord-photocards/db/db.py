@@ -26,6 +26,12 @@ class Database:
         cursor = conn.execute("INSERT INTO users(userid, photo_group, photo_id) VALUES (?, ?, ?)", (user_id, collection_name, photo_id))
         conn.commit()
         conn.close()
+    
+    def lock_image(self, user_id, collection_name, photo_id):
+        conn = self._get_conn()
+        cursor = conn.execute("DELETE FROM users WHERE userid = ? AND photo_group = ? AND photo_id = ?", (user_id, collection_name, photo_id))
+        conn.commit()
+        conn.close()
 
 
     def _get_conn(self):
