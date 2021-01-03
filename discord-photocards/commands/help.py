@@ -1,5 +1,6 @@
+from ..constants import ADMINS, COMMAND_PREFIX
 from .base_class import BotCommand
-from ..constants import COMMAND_PREFIX, ADMINS
+
 
 class HelpBotCommand(BotCommand):
     # Commands should be unique
@@ -17,6 +18,4 @@ class HelpBotCommand(BotCommand):
         for command_suffix in sorted(self._command_registry):
             if not self._command_is_admin[command_suffix] or self.author_id in ADMINS:
                 msg.append(f"\t-\t{COMMAND_PREFIX}{command_suffix}")
-        return {
-            "content": '\n'.join(msg)
-        }
+        return {"content": "\n".join(msg)}
