@@ -1,7 +1,8 @@
 import discord
 from .constants import COMMAND_PREFIX
 from .commands import get_command_class
-token = "NTY0NzUyMzEzMTQzNzg3NTMx.XKsclA.6bom3D1uZfkNGUDtSYP-_0PXZUI"
+import os
+token = os.getenv("DISCORD_PHOTOCARD_TOKEN")
 
 client = discord.Client()
 
@@ -12,12 +13,10 @@ async def on_ready():
 @client.event
 async def on_message(message: discord.Message):
     if message.author == client.user:
-        print("client user")
         return
     elif message.channel.name != "12ghast-vcard":
         return
     elif not message.content.startswith(COMMAND_PREFIX):
-        print(message.content)
         return
     
     await message.channel.send(**get_command_class(message).process())
