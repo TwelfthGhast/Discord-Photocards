@@ -19,6 +19,7 @@ class LockBotCommand(BotCommand):
             "\t\t\t\t - <username> should be a discord mention"
         ])
     }
+    _admin = True
 
     def __init__(self, message: str, author_id: int, mentions: List[discord.Member]):
         self.message = message

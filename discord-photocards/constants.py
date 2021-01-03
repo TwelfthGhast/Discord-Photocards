@@ -1,3 +1,7 @@
 COMMAND_PREFIX = "tcg!"
 DB_NAME = "user_data.db"
 BORDER_SIZE = 20
+ADMINS = [
+    232310052956930048, #gely
+    272548308411744257 #12Ghast
+]

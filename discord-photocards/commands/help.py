@@ -1,9 +1,10 @@
 from .base_class import BotCommand
-from ..constants import COMMAND_PREFIX
+from ..constants import COMMAND_PREFIX, ADMINS
 
 class HelpBotCommand(BotCommand):
     # Commands should be unique
     _command = "help"
+    _admin = False
 
     def __init__(self, message, author_id, mentions):
         # these are useless for help command
@@ -14,7 +15,8 @@ class HelpBotCommand(BotCommand):
     def process(self):
         msg = ["Here is a list of all available commands"]
         for command_suffix in sorted(self._command_registry):
-            msg.append(f"\t-\t{COMMAND_PREFIX}{command_suffix}")
+            if not self._command_is_admin[command_suffix] or self.author_id in ADMINS:
+                msg.append(f"\t-\t{COMMAND_PREFIX}{command_suffix}")
         return {
             "content": '\n'.join(msg)
         }
