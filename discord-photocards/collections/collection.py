@@ -61,5 +61,8 @@ class CollectionFactory:
 
 collections = CollectionFactory()
 
+def get_collections():
+    return sorted(list(collections._collection_registry.keys()))
+
 def get_collection(collection_name: str):
     return collections.get_collection(collection_name)
