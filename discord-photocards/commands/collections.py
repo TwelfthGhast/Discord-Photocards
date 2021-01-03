@@ -5,6 +5,7 @@ from ..collections import get_collections
 class CollectionsBotCommand(BotCommand):
     # Commands should be unique
     _command = "collections"
+    _admin = False
 
     def __init__(self, message, author_id, mentions):
         # these are useless for collections

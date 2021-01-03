@@ -17,6 +17,7 @@ class ViewBotCommand(BotCommand):
         f"\t\t{COMMAND_PREFIX}{_command} <collection> <n>",
         "\t\t\t\t- Shows you the <n>th card in the <collection>",
     ])}
+    _admin = False
 
     def __init__(self, message, author_id, mentions):
         self.message = message
