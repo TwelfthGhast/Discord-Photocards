@@ -20,6 +20,6 @@ async def on_message(message: discord.Message):
         print(message.content)
         return
     
-    await message.channel.send(get_command_class(message).process())
+    await message.channel.send(**get_command_class(message).process())
 
 client.run(token)

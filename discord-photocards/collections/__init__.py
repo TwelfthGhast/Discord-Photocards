@@ -1,1 +1,1 @@
-from .collection import get_collection
+from .collection import get_collection, Collection
