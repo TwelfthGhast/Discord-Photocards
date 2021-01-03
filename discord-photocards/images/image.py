@@ -1,44 +1,61 @@
 from PIL import Image, ImageDraw
+from ..collections import Collection
+from ..constants import BORDER_SIZE
+from typing import List
+from io import BytesIO
+import math
 
-def get_collection_picture():
+def get_collection_picture(collection: Collection, unlocked_images: List[int] = []):
     # Create base canvas for returned picture
-    width = collClass.width if collClass.width < collClass.size else collClass.size
-    height = math.floor(
-        collClass.size / collClass.width) if collClass.size % collClass.width == 0 else math.ceil(collClass.size / collClass.width)
-    single_w, single_h = collClass.img_size
-    BORDER_SIZE = 20
-    dimensions = (width * single_w + (width + 1) * BORDER_SIZE,
-                  height * single_h + (height + 1) * BORDER_SIZE)
-    image = Image.new('RGB', dimensions, (221, 204, 255))
+    canvas_width = collection.images_per_row * collection.image_width + (collection.images_per_row + 1) * BORDER_SIZE
+    canvas_height = collection.images_per_column * collection.image_height + (collection.images_per_column + 1) * BORDER_SIZE
+    image = Image.new('RGB', (canvas_width, canvas_height), (221, 204, 255))
+
     # Draw on rectangles where images will be placed
     draw = ImageDraw.Draw(image)
-    for i in range(0, collClass.size):
+    for i in range(collection.num_items):
         # all positions are offset from top left corner of rectangle
-        row = math.floor(i/collClass.width)
-        top_offset = row * single_h + BORDER_SIZE * (row + 1)
-        col = i % collClass.width
-        left_offset = col * single_w + BORDER_SIZE * (col + 1)
-        if not collClass.preview:
-            draw.rectangle([(left_offset, top_offset), (left_offset +
-                                                        single_w, top_offset + single_h)], fill=(255, 255, 255))
-        else:
-            temp_image = Image.open(f"collections/{collClass.name}/{collClass.preview}")
-            temp_image = temp_image.resize(
-                (single_w, single_h), Image.ANTIALIAS)
-            image.paste(temp_image, (left_offset, top_offset,
-                                     left_offset + single_w, top_offset + single_h))
-    # Now place images in
-    # userClass has numbers from 1 to arraySize, so we will need to subtract 1
-    for itemNo in user.collected[collClass.name]:
-        itemNo -= 1
-        temp_image = Image.open(f"collections/{collClass.name}/{collClass.items[itemNo]}")
-        temp_image = temp_image.resize(
-            (single_w, single_h), Image.ANTIALIAS)
-        # Find position of item
-        row = math.floor(itemNo/collClass.width)
-        top_offset = row * single_h + BORDER_SIZE * (row + 1)
-        col = itemNo % collClass.width
-        left_offset = col * single_w + BORDER_SIZE * (col + 1)
-        # paste the loaded image onto prepared background
-        image.paste(temp_image, (left_offset, top_offset,
-            left_offset + single_w, top_offset + single_h))
+        row = math.floor(i/collection.images_per_row)
+        top_offset = row * collection.image_height + BORDER_SIZE * (row + 1)
+        col = i % collection.images_per_row
+        left_offset = col * collection.image_width + BORDER_SIZE * (col + 1)
+
+        preview_image = Image.open(collection.preview_path)
+        preview_image = preview_image.resize(
+            (collection.image_width, collection.image_height), 
+            Image.ANTIALIAS
+        )
+        image.paste(
+            preview_image,
+            (
+                left_offset,
+                top_offset,
+                left_offset + collection.image_width,
+                top_offset + collection.image_height
+            )
+        )
+    # unlocked images from 1..N
+    for item_no in unlocked_images:
+        item_no -= 1
+        temp_image = Image.open(collection.image_paths[item_no])
+        row = math.floor(item_no/collection.images_per_row)
+        top_offset = row * collection.image_height + BORDER_SIZE * (row + 1)
+        col = itemNo % collection.images_per_row
+        left_offset = col * collection.image_width + BORDER_SIZE * (col + 1)
+        image.paste(
+            temp_image,
+            (
+                left_offset,
+                top_offset,
+                left_offset + collection.image_width,
+                top_offset + collection.image_height
+            )
+        )
+    return _image_to_byte_stream(image)
+
+# https://stackoverflow.com/questions/60006794/send-image-from-memory
+def _image_to_byte_stream(image: PIL.Image.Image):
+    _img_byte_arr = BytesIO()
+    image.save(_img_byte_arr, format='JPEG')
+    _img_byte_arr.seek(0)
+    return _img_byte_arr

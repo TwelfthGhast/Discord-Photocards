@@ -2,14 +2,22 @@ import os
 import pathlib
 from typing import List, Tuple, Optional
 from PIL import Image
+import math
 
 class Collection:
     def __init__(self, path: pathlib.PosixPath):
+        self.name = path.name
         self.image_paths = []
-        for image_path in [x for x in path.glob('*/*') if x.is_file() and any(str(x).endswith(ext) for ext in [".png", ".jpg", ".jpeg"])]:
-            self.image_paths.append(image_path)
+        self.preview_path = path.parent / "preview.jpg"
+        for image_path in [x for x in path.glob('./*') if x.is_file() and any(str(x).endswith(ext) for ext in [".png", ".jpg", ".jpeg"])]:
+            if image_path.name.startswith("preview"):
+                self.preview_path = image_path
+            else:
+                self.image_paths.append(image_path)
         self.num_items = len(self.image_paths)
         self.image_width, self.image_height = self._validate_image_dimensions()
+        self.images_per_row = math.ceil(math.sqrt(self.num_items))
+        self.images_per_column = math.floor(self.num_items / self.images_per_row) if self.num_items % self.images_per_row == 0 else math.ceil(self.num_items / self.images_per_row)
     
     def _validate_image_dimensions(self) -> Tuple[int, int]:
         """ Checks that all images in input paths have same dimensions
@@ -40,8 +48,8 @@ class CollectionFactory:
     _collection_registry = {}
 
     def __init__(self):
-        dir_path = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))
-        for subdir in [x for x in dir_path.iterdir() if x.is_dir()]:
+        dir_path = pathlib.Path(__file__).parent.absolute() / "files"
+        for subdir in [x for x in dir_path.iterdir() if x.is_dir() and not x.name.startswith("__")]:
             self._collection_registry[subdir.name] = Collection(subdir)
     
 
