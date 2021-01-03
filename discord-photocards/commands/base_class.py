@@ -57,7 +57,7 @@ class BotCommand(abc.ABC):
                 rest_of_message, author_id, mentions
             )
         else:
-            return self._command_registry["help"]("", None, mentions)
+            return self._command_registry["help"](rest_of_message, author_id, mentions)
 
     def process(self):
         raise NotImplementedError

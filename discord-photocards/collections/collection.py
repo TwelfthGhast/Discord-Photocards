@@ -11,12 +11,12 @@ class Collection:
         self.name = path.name
         self.image_paths = []
         self.preview_path = path.parent / "preview.jpg"
-        for image_path in [
+        for image_path in sorted([
             x
             for x in path.glob("./*")
             if x.is_file()
             and any(str(x).endswith(ext) for ext in [".png", ".jpg", ".jpeg"])
-        ]:
+        ]):
             if image_path.name.startswith("preview"):
                 self.preview_path = image_path
             else:
