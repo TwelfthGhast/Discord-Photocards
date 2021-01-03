@@ -1,6 +1,7 @@
-from .base_class import BotCommand
-from ..constants import COMMAND_PREFIX
 from ..collections import get_collections
+from ..constants import COMMAND_PREFIX
+from .base_class import BotCommand
+
 
 class CollectionsBotCommand(BotCommand):
     # Commands should be unique
@@ -17,6 +18,4 @@ class CollectionsBotCommand(BotCommand):
         msg = ["Here is a list of all collections"]
         for collection in get_collections():
             msg.append(f"\t-\t{collection}")
-        return {
-            "content": '\n'.join(msg)
-        }
+        return {"content": "\n".join(msg)}
