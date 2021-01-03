@@ -9,9 +9,12 @@ class HelpBotCommand(BotCommand):
         # these are useless for help command
         self.message = message
         self.author_id = author_id
+        self.mentions = mentions
 
     def process(self):
         msg = ["Here is a list of all available commands"]
         for command_suffix in self._command_registry:
             msg.append(f"\t-\t{COMMAND_PREFIX}{command_suffix}")
-        return '\n'.join(msg)
+        return {
+            "content": '\n'.join(msg)
+        }

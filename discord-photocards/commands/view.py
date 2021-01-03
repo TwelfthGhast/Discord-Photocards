@@ -18,9 +18,10 @@ class ViewBotCommand(BotCommand):
         "\t\t\t\t- Shows you the <n>th card in the <collection>",
     ])}
 
-    def __init__(self, message, author_id):
+    def __init__(self, message, author_id, mentions):
         self.message = message
         self.author_id = author_id
+        self.mentions = mentions
 
     def process(self):
         message_data = self.message.split()

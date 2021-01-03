@@ -40,7 +40,7 @@ def get_collection_picture(collection: Collection, unlocked_images: List[int] = 
         temp_image = Image.open(collection.image_paths[item_no])
         row = math.floor(item_no/collection.images_per_row)
         top_offset = row * collection.image_height + BORDER_SIZE * (row + 1)
-        col = itemNo % collection.images_per_row
+        col = item_no % collection.images_per_row
         left_offset = col * collection.image_width + BORDER_SIZE * (col + 1)
         image.paste(
             temp_image,
@@ -54,7 +54,7 @@ def get_collection_picture(collection: Collection, unlocked_images: List[int] = 
     return _image_to_byte_stream(image)
 
 # https://stackoverflow.com/questions/60006794/send-image-from-memory
-def _image_to_byte_stream(image: PIL.Image.Image):
+def _image_to_byte_stream(image: Image.Image):
     _img_byte_arr = BytesIO()
     image.save(_img_byte_arr, format='JPEG')
     _img_byte_arr.seek(0)
