@@ -30,42 +30,9 @@ ADMINS = [
 BACKUP_DIR = "backup"
 USER_BACKUP = f"{BACKUP_DIR}/user.p"
 
-
-def cleanup_function():
-    print("Attempting to save users...")
-    try:
-        pickle_user_file = open(USER_BACKUP, "wb")
-        pickle.dump(TCGUser.all_users, pickle_user_file)
-        pickle_user_file.close()
-        print("Saved users")
-    except Exception as err:
-        print("An error occurred when saving user database:")
-        print(e)
-
-
-def regular_backup(seconds=60*60*3):
-    while True:
-        sleep(seconds)
-        time = datetime.datetime.now()
-        backup_name = f"{BACKUP_DIR}/user-{int(time.timestamp())}.p"
-        print(
-            f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Saving a backup to {backup_name}")
-        pickle_user_file = open(backup_name, "wb")
-        pickle.dump(TCGUser.all_users, pickle_user_file)
-        pickle_user_file.close()
-
-
-def read_pickle(filename):
-    pickle_msg_file = open(filename, "rb")
-    data = pickle.load(pickle_msg_file)
-    pickle_msg_file.close()
-    return data
-
-
 @client.event
 async def on_ready():
     print(f"Logged in as {client.user}")
-
 
 @client.event
 async def on_message(message):
@@ -128,21 +95,5 @@ for collection in os.listdir("collections"):
         next
     temp_TCG = TCGCollection(collection, images, (width, height), math.ceil(
         math.sqrt(len(images))), preview)
-
-print("Creating thread for periodic backups")
-x = threading.Thread(target=regular_backup, daemon=True)
-x.start()
-
-print("Attempting to import users from file")
-if os.path.exists(USER_BACKUP) and os.path.isfile(USER_BACKUP):
-    try:
-        TCGUser.all_users = read_pickle(USER_BACKUP)
-        print(f"Imported users from {USER_BACKUP}")
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        exit(1)
-else:
-    print(f"Could not find {USER_BACKUP}")
-atexit.register(cleanup_function)
 
 client.run(token)
