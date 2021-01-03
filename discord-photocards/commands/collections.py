@@ -1,20 +1,21 @@
 from .base_class import BotCommand
 from ..constants import COMMAND_PREFIX
+from ..collections import get_collections
 
-class HelpBotCommand(BotCommand):
+class CollectionsBotCommand(BotCommand):
     # Commands should be unique
-    _command = "help"
+    _command = "collections"
 
     def __init__(self, message, author_id, mentions):
-        # these are useless for help command
+        # these are useless for collections
         self.message = message
         self.author_id = author_id
         self.mentions = mentions
 
     def process(self):
-        msg = ["Here is a list of all available commands"]
-        for command_suffix in sorted(self._command_registry):
-            msg.append(f"\t-\t{COMMAND_PREFIX}{command_suffix}")
+        msg = ["Here is a list of all collections"]
+        for collection in get_collections():
+            msg.append(f"\t-\t{collection}")
         return {
             "content": '\n'.join(msg)
         }

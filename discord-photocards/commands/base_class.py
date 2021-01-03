@@ -34,7 +34,7 @@ class BotCommand(abc.ABC):
         if command_suffix in self._command_registry:
             return self._command_registry[command_suffix](rest_of_message, author_id, mentions)
         else:
-            return self._command_registry["help"]("", None)
+            return self._command_registry["help"]("", None, mentions)
     
     def process(self):
         raise NotImplementedError
