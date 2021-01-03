@@ -1,6 +1,7 @@
 import abc
 import discord
 from ..constants import COMMAND_PREFIX
+from typing import List
 
 def _get_message_details(message: discord.Message):
     author_id = message.author.id
@@ -11,7 +12,7 @@ def _get_message_details(message: discord.Message):
         rest_of_message = ""
     assert command.startswith(COMMAND_PREFIX)
     command_suffix = command[len(COMMAND_PREFIX):]
-    return command_suffix, rest_of_message, author_id
+    return command_suffix, rest_of_message, author_id, message.mentions
 
 
 def get_command_class(message: discord.Message):
@@ -29,9 +30,9 @@ class BotCommand(abc.ABC):
         super().__init_subclass__(**kwargs)
         self._command_registry[self._command] = self
     
-    def factory(self, command_suffix: str, rest_of_message: str, author_id: int):
+    def factory(self, command_suffix: str, rest_of_message: str, author_id: int, mentions: List[discord.Member]):
         if command_suffix in self._command_registry:
-            return self._command_registry[command_suffix](rest_of_message, author_id)
+            return self._command_registry[command_suffix](rest_of_message, author_id, mentions)
         else:
             return self._command_registry["help"]("", None)
     
